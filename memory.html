@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Working Memory Reconstruction</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="style.css">
+
+<style>
+
+.scan-container{
+max-width:900px;
+margin:auto;
+padding:80px 8%;
+text-align:center;
+}
+
+.scan-title{
+font-size:54px;
+margin-bottom:20px;
+}
+
+.scan-subtitle{
+color:#94a3b8;
+line-height:1.8;
+margin-bottom:50px;
+}
+
+.card{
+background:rgba(15,23,42,0.72);
+border:1px solid rgba(255,255,255,0.08);
+backdrop-filter:blur(14px);
+padding:45px;
+border-radius:24px;
+box-shadow:0 10px 40px rgba(0,0,0,0.35);
+}
+
+.sequence{
+font-size:42px;
+font-weight:700;
+letter-spacing:4px;
+margin:35px 0;
+color:#c4b5fd;
+}
+
+.interference{
+font-size:28px;
+margin:30px 0;
+line-height:1.7;
+}
+
+input{
+width:100%;
+padding:18px;
+margin-top:25px;
+border:none;
+border-radius:16px;
+background:#111827;
+color:white;
+font-size:17px;
+outline:none;
+}
+
+button{
+margin-top:25px;
+}
+
+.result-card{
+display:none;
+margin-top:40px;
+background:rgba(15,23,42,0.72);
+padding:40px;
+border-radius:24px;
+border:1px solid rgba(255,255,255,0.08);
+}
+
+.result-card h2{
+font-size:40px;
+margin-bottom:20px;
+}
+
+.result-card p{
+color:#94a3b8;
+line-height:1.8;
+margin-bottom:20px;
+}
+
+.action-buttons{
+display:flex;
+justify-content:center;
+gap:20px;
+margin-top:30px;
+flex-wrap:wrap;
+}
+
+.action-buttons a{
+text-decoration:none;
+}
+
+.phase-label{
+font-size:14px;
+letter-spacing:2px;
+text-transform:uppercase;
+color:#8b5cf6;
+margin-bottom:20px;
+}
+
+@media(max-width:768px){
+
+.scan-title{
+font-size:40px;
+}
+
+.sequence{
+font-size:28px;
+}
+
+.interference{
+font-size:22px;
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="background-glow"></div>
+
+<div class="scan-container">
+
+<h1 class="scan-title">
+🧠 Working Memory Reconstruction
+</h1>
+
+<p class="scan-subtitle">
+Analyze short-term retention, cognitive reconstruction, and interference resistance through neural memory mapping.
+</p>
+
+<div class="card" id="scanCard">
+
+<div class="phase-label" id="phaseLabel">
+Memory Encoding Phase
+</div>
+
+<div id="contentArea">
+
+<div class="sequence" id="sequence">
+17A • LUNA • 42X • VERTEX • 91
+</div>
+
+<button onclick="startInterference()">
+Continue
+</button>
+
+</div>
+
+</div>
+
+<div class="result-card" id="resultCard">
+
+<h2 id="resultTitle"></h2>
+
+<p id="resultText"></p>
+
+<p id="insightText"></p>
+
+
+
+<a href="index.html">
+<button>
+Return Home
+</button>
+</a>
+<div class="action-buttons">
+
+<a href="index.html#scans">
+
+<button>
+Take Another Scan
+</button>
+
+</a>
+
+<a href="index.html">
+
+<button>
+Return Home
+</button>
+
+</a>
+
+<a href="dashboard.html">
+
+<button>
+Open Dashboard
+</button>
+
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+const originalSequence =
+"17A LUNA 42X VERTEX 91";
+
+function startInterference(){
+
+document.getElementById("phaseLabel").innerText =
+"Interference Phase";
+
+document.getElementById("contentArea").innerHTML = `
+
+<div class="interference">
+
+Mentally arrange these numbers from lowest to highest:
+
+<br><br>
+
+91 • 12 • 47 • 3 • 28
+
+</div>
+
+<button onclick="startRecall()">
+Continue
+</button>
+
+`;
+
+}
+
+function startRecall(){
+
+document.getElementById("phaseLabel").innerText =
+"Reconstruction Phase";
+
+document.getElementById("contentArea").innerHTML = `
+
+<div class="interference">
+
+Reconstruct the original sequence from memory.
+
+</div>
+
+<input
+type="text"
+id="memoryInput"
+placeholder="Type the sequence here..."
+>
+
+<button onclick="analyzeMemory()">
+Analyze Recall
+</button>
+
+`;
+
+}
+
+function analyzeMemory(){
+
+const input =
+document.getElementById("memoryInput")
+.value
+.toUpperCase();
+
+let score = 0;
+
+const items =
+["17A","LUNA","42X","VERTEX","91"];
+
+items.forEach(item=>{
+
+if(input.includes(item)){
+score++;
+}
+
+});
+
+document.getElementById("scanCard").style.display =
+"none";
+
+document.getElementById("resultCard").style.display =
+"block";
+
+let title = "";
+let text = "";
+let insight = "";
+
+if(score >= 5){
+
+title =
+"🧩 High Recall Stability";
+
+text =
+"Your responses suggest strong short-term retention and efficient memory reconstruction under interference.";
+
+insight =
+"Research suggests higher working memory stability may support sustained reasoning and attentional control.";
+
+}
+
+else if(score >= 3){
+
+title =
+"⚡ Adaptive Reconstruction Pattern";
+
+text =
+"Your responses indicate moderate memory flexibility with partial retention recovery after cognitive interference.";
+
+insight =
+"Moderate reconstruction variability is common during divided attention and interference conditions.";
+
+}
+
+else{
+
+title =
+"🌙 Interference Sensitivity";
+
+text =
+"Your responses suggest reduced recall consistency during attentional disruption and cognitive interruption.";
+
+insight =
+"Working memory performance may fluctuate under high cognitive load or rapid attentional switching.";
+
+}
+
+document.getElementById("resultTitle").innerText =
+title;
+
+document.getElementById("resultText").innerText =
+text;
+
+document.getElementById("insightText").innerText =
+insight;
+
+localStorage.setItem("memoryResult",title);
+
+}
+
+</script>
+
+</body>
+</html>

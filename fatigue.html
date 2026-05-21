@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>Cognitive Fatigue Scan</title>
+
+<link rel="stylesheet" href="style.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+<style>
+
+.scan-container{
+max-width:800px;
+margin:auto;
+padding:80px 8%;
+text-align:center;
+}
+
+.question-card,
+.result-card{
+
+background:rgba(15,23,42,.7);
+backdrop-filter:blur(16px);
+
+padding:35px;
+border-radius:24px;
+border:1px solid rgba(255,255,255,.08);
+
+margin-bottom:35px;
+}
+
+.option-btn{
+
+width:100%;
+padding:16px;
+margin-bottom:14px;
+
+background:#111827;
+color:white;
+
+border:none;
+border-radius:14px;
+
+cursor:pointer;
+}
+
+.action-buttons{
+
+display:flex;
+gap:15px;
+justify-content:center;
+margin-top:30px;
+flex-wrap:wrap;
+}
+
+.action-buttons button{
+
+padding:14px 22px;
+border:none;
+border-radius:14px;
+cursor:pointer;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="scan-container">
+
+<h1>🧠 Cognitive Fatigue Scan</h1>
+
+<p>Analyze cognitive overload and mental recovery patterns</p>
+
+<div class="question-card" id="questionCard">
+
+<h2 id="question">Loading...</h2>
+
+<div id="options"></div>
+
+</div>
+
+<div class="result-card" id="resultCard" style="display:none;">
+
+<h2 id="resultTitle"></h2>
+
+<p id="resultText"></p>
+
+<div class="insight">
+
+<h3>Neuroscience Insight</h3>
+
+<p id="insightText"></p>
+
+</div>
+
+<div class="action-buttons">
+
+<button onclick="location.href='dopamine.html'">
+Take Next Test
+</button>
+
+<button onclick="location.href='index.html'">
+Homepage
+</button>
+
+<button onclick="location.href='dashboard.html'">
+Dashboard
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+<script type="module" src="firebase.js"></script>
+
+<script>
+
+const questions=[
+
+{
+question:"How often do familiar tasks suddenly feel mentally heavy?",
+options:["Rarely","Occasionally","Frequently"]
+},
+
+{
+question:"After socially intense days your mind usually:",
+options:["Settles quickly","Stays active","Becomes difficult to quiet"]
+},
+
+{
+question:"How often do your eyes continue reading before processing meaning?",
+options:["Rarely","Sometimes","Very often"]
+},
+
+{
+question:"Which environment drains you fastest?",
+options:["Noise","Emotional tension","Multitasking"]
+},
+
+{
+question:"Under stress your thoughts become:",
+options:["Hyperactive","Fragmented","Slow"]
+}
+
+];
+
+let currentQuestion=0;
+let score=0;
+
+const questionEl=document.getElementById("question");
+const optionsEl=document.getElementById("options");
+
+function loadQuestion(){
+
+const current=questions[currentQuestion];
+
+questionEl.innerText=current.question;
+
+optionsEl.innerHTML="";
+
+current.options.forEach((option,index)=>{
+
+const btn=document.createElement("button");
+
+btn.className="option-btn";
+
+btn.innerText=option;
+
+btn.onclick=()=>selectAnswer(index);
+
+optionsEl.appendChild(btn);
+
+});
+
+}
+
+function selectAnswer(index){
+
+score+=index;
+currentQuestion++;
+
+if(currentQuestion<questions.length){
+
+loadQuestion();
+
+}else{
+
+showResult();
+
+}
+
+}
+
+async function showResult(){
+
+const age=localStorage.getItem("userAge");
+const role=localStorage.getItem("userRole");
+const consent=localStorage.getItem("consent");
+
+if(!age || !role || !consent){
+
+alert("Complete profile on homepage first");
+
+window.location.href="index.html";
+
+return;
+
+}
+
+document.getElementById("questionCard").style.display="none";
+document.getElementById("resultCard").style.display="block";
+
+let title="";
+let text="";
+let insight="";
+
+if(score<=3){
+
+title="Adaptive Cognitive Recovery";
+text="Balanced recovery patterns detected.";
+insight="Stable recovery systems support sustained attention.";
+
+}
+
+else if(score<=6){
+
+title="Moderate Neural Fatigue";
+text="Intermittent overstimulation detected.";
+insight="Repeated attention switching may reduce efficiency.";
+
+}
+
+else{
+
+title="High Neural Load";
+text="Extended cognitive overload detected.";
+insight="High stimulation may affect working memory.";
+
+}
+
+document.getElementById("resultTitle").innerText=title;
+document.getElementById("resultText").innerText=text;
+document.getElementById("insightText").innerText=insight;
+
+await saveResult({
+
+age:age,
+role:role,
+scan:"fatigue",
+score:score,
+result:title,
+timestamp:new Date().toLocaleString()
+
+});
+
+}
+
+loadQuestion();
+
+</script>
+
+</body>
+</html>

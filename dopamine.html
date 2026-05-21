@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Dopamine Dependency Scan</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+
+<style>
+
+.scan-container{
+max-width:800px;
+margin:auto;
+padding:80px 8%;
+text-align:center;
+}
+
+.question-card,
+.result-card{
+
+background:rgba(15,23,42,.72);
+
+padding:35px;
+
+border-radius:24px;
+
+border:1px solid rgba(255,255,255,.08);
+
+margin-bottom:35px;
+
+backdrop-filter:blur(14px);
+
+}
+
+.option-btn{
+
+width:100%;
+padding:18px;
+
+margin-bottom:14px;
+
+background:#111827;
+
+color:white;
+
+border:none;
+border-radius:14px;
+
+cursor:pointer;
+}
+
+.option-btn:hover{
+
+transform:translateY(-3px);
+
+}
+
+.action-buttons{
+
+display:flex;
+justify-content:center;
+gap:14px;
+flex-wrap:wrap;
+
+margin-top:30px;
+
+}
+
+.action-buttons button{
+
+padding:14px 20px;
+
+border:none;
+border-radius:14px;
+
+cursor:pointer;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="scan-container">
+
+<h1>⚡ Dopamine Dependency Scan</h1>
+
+<p>
+Analyze reward sensitivity and stimulation-seeking behavior
+</p>
+
+<div class="question-card" id="questionCard">
+
+<h2 id="question">
+Loading...
+</h2>
+
+<div id="options"></div>
+
+</div>
+
+<div class="result-card" id="resultCard" style="display:none;">
+
+<h2 id="resultTitle"></h2>
+
+<p id="resultText"></p>
+
+<div class="profile-box">
+
+<h3>
+Attention Switching Profile
+</h3>
+
+<p id="profileText"></p>
+
+</div>
+
+<div class="insight-box">
+
+<h3>
+Neural Reward Insight
+</h3>
+
+<p id="insightText"></p>
+
+</div>
+
+<div class="action-buttons">
+
+<button onclick="location.href='memory.html'">
+Take Next Test
+</button>
+
+<button onclick="location.href='index.html'">
+Homepage
+</button>
+
+<button onclick="location.href='dashboard.html'">
+Dashboard
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+<script type="module" src="firebase.js"></script>
+
+<script>
+
+const questions=[
+
+{
+question:"How quickly do you seek stimulation during moments of boredom?",
+options:["Slowly","Moderately fast","Immediately"]
+},
+
+{
+question:"Can you complete tasks without checking another app?",
+options:["Usually","Sometimes","Rarely"]
+},
+
+{
+question:"Which feels most uncomfortable?",
+options:["Silence","Waiting","Doing one thing too long"]
+},
+
+{
+question:"How often do you consume multiple media simultaneously?",
+options:["Rarely","Sometimes","Constantly"]
+},
+
+{
+question:"Your attention feels strongest when:",
+options:["Deeply immersed","Mildly stimulated","Rapidly switching"]
+}
+
+];
+
+let currentQuestion=0;
+let score=0;
+
+const questionEl=document.getElementById("question");
+const optionsEl=document.getElementById("options");
+
+function loadQuestion(){
+
+const current=questions[currentQuestion];
+
+questionEl.innerText=current.question;
+
+optionsEl.innerHTML="";
+
+current.options.forEach((option,index)=>{
+
+const btn=document.createElement("button");
+
+btn.className="option-btn";
+
+btn.innerText=option;
+
+btn.onclick=()=>selectAnswer(index);
+
+optionsEl.appendChild(btn);
+
+});
+
+}
+
+function selectAnswer(index){
+
+score+=index;
+currentQuestion++;
+
+if(currentQuestion<questions.length){
+
+loadQuestion();
+
+}else{
+
+showResult();
+
+}
+
+}
+
+async function showResult(){
+
+const age=localStorage.getItem("userAge");
+const role=localStorage.getItem("userRole");
+const consent=localStorage.getItem("consent");
+
+if(!age || !role || !consent){
+
+alert("Complete profile on homepage first");
+
+window.location.href="index.html";
+
+return;
+
+}
+
+document.getElementById("questionCard").style.display="none";
+
+document.getElementById("resultCard").style.display="block";
+
+let title="";
+let text="";
+let profile="";
+let insight="";
+
+if(score<=3){
+
+title="🧘 Sustained Attention Profile";
+
+text="Stable attention regulation detected.";
+
+profile="Maintains engagement without strong novelty dependence.";
+
+insight="Reduced attentional switching often supports deeper focus cycles.";
+
+}
+
+else if(score<=6){
+
+title="⚖ Balanced Stimulation Dependency";
+
+text="Moderate novelty-seeking detected.";
+
+profile="Adaptive attention switching profile.";
+
+insight="Moderate stimulation patterns are associated with flexible cognition.";
+
+}
+
+else{
+
+title="📱 High Stimulation Dependency";
+
+text="Elevated novelty-seeking detected.";
+
+profile="Strong responsiveness to fast-changing environments.";
+
+insight="Frequent attention switching may reduce sustained focus efficiency.";
+
+}
+
+document.getElementById("resultTitle").innerText=title;
+document.getElementById("resultText").innerText=text;
+document.getElementById("profileText").innerText=profile;
+document.getElementById("insightText").innerText=insight;
+
+await saveResult({
+
+age:age,
+role:role,
+
+scan:"dopamine",
+
+score:score,
+
+result:title,
+
+timestamp:new Date().toLocaleString()
+
+});
+
+}
+
+loadQuestion();
+
+</script>
+
+</body>
+</html>

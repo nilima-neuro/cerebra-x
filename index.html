@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Cerebra X</title>
+
+<link rel="stylesheet" href="style.css">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+<link rel="icon" type="image/png" href="logo.png">
+
+<style>
+
+.user-box{
+
+max-width:700px;
+margin:50px auto;
+
+padding:35px;
+
+background:rgba(15,23,42,.75);
+
+border-radius:24px;
+
+border:1px solid rgba(255,255,255,.08);
+
+backdrop-filter:blur(16px);
+
+text-align:center;
+
+}
+
+.user-box h2{
+
+margin-bottom:15px;
+
+}
+
+.user-box p{
+
+color:#94a3b8;
+
+margin-bottom:25px;
+
+}
+
+.user-box select{
+
+width:100%;
+
+padding:15px;
+
+margin-bottom:18px;
+
+border:none;
+
+border-radius:12px;
+
+background:#111827;
+
+color:white;
+
+}
+
+.user-box label{
+
+display:block;
+
+margin:20px 0;
+
+}
+
+.save-btn{
+
+padding:14px 28px;
+
+border:none;
+
+border-radius:14px;
+
+cursor:pointer;
+
+background:#7a5cff;
+
+color:white;
+
+font-size:16px;
+
+}
+
+.saved{
+
+margin-top:15px;
+
+color:#8b5cf6;
+
+display:none;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="bg-glow glow1"></div>
+<div class="bg-glow glow2"></div>
+
+<nav class="navbar">
+
+<div class="logo-area">
+<img src="logo.png" class="logo-img">
+<h1 class="logo-text">CEREBRA X</h1>
+</div>
+
+<div class="nav-links">
+<a href="index.html">Home</a>
+<a href="dashboard.html">Dashboard</a>
+</div>
+
+</nav>
+
+<section class="hero">
+
+<div class="hero-left">
+
+<p class="small-tag">
+Cognitive Analysis Platform
+</p>
+
+<h2>
+Decode Your <br>
+Cognitive <br>
+Patterns
+</h2>
+
+<p class="hero-description">
+
+A neuroscience-inspired interactive experience exploring focus,
+memory reconstruction, dopamine stimulation,
+neural fatigue and cognitive response behavior.
+
+</p>
+
+</div>
+
+<div class="hero-right">
+
+<img src="logo.png" class="brain-hero">
+
+</div>
+
+</section>
+
+
+<div class="user-box">
+
+<h2>
+Anonymous Research Participation
+</h2>
+
+<p>
+
+Your responses remain anonymous and may contribute to future cognitive behavior research.
+
+</p>
+
+<select id="userAge">
+
+<option value="">Select Age</option>
+
+<option>Under 16</option>
+<option>16-18</option>
+<option>19-22</option>
+<option>23+</option>
+
+</select>
+
+<select id="userRole">
+
+<option value="">Select Role</option>
+
+<option>Student</option>
+<option>Working</option>
+<option>Other</option>
+
+</select>
+
+<label>
+
+<input type="checkbox" id="consent">
+
+I agree to anonymous data collection
+
+</label>
+
+<button class="save-btn" onclick="saveProfile()">
+
+Save Profile
+
+</button>
+
+<div class="saved" id="savedMsg">
+
+✓ Profile saved successfully
+
+</div>
+
+</div>
+
+
+<section class="scan-grid">
+
+<a href="fatigue.html" class="scan-card">
+<h3>Cognitive Fatigue</h3>
+<p>
+Analyze mental exhaustion patterns,
+focus depletion and neural overload.
+</p>
+</a>
+
+<a href="dopamine.html" class="scan-card">
+<h3>Dopamine Dependency</h3>
+<p>
+Explore reward sensitivity,
+stimulation cycles and attention switching.
+</p>
+</a>
+
+<a href="memory.html" class="scan-card">
+<h3>Memory Reconstruction</h3>
+<p>
+Evaluate sequence retention,
+recall flexibility and memory adaptation.
+</p>
+</a>
+
+<a href="reaction.html" class="scan-card">
+<h3>Neural Reflex Calibration</h3>
+<p>
+Measure response speed,
+impulse control and selective attention.
+</p>
+</a>
+
+</section>
+
+<script type="module" src="firebase.js"></script>
+
+<script>
+
+function saveProfile(){
+
+const age=document.getElementById("userAge").value;
+
+const role=document.getElementById("userRole").value;
+
+const consent=document.getElementById("consent").checked;
+
+if(!age||!role||!consent){
+
+alert("Complete all fields");
+
+return;
+
+}
+
+localStorage.setItem("userAge",age);
+
+localStorage.setItem("userRole",role);
+
+localStorage.setItem("consent",true);
+
+document.getElementById("savedMsg").style.display="block";
+
+}
+
+</script>
+
+</body>
+</html>

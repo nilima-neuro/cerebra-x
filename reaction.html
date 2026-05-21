@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Neural Reflex Calibration</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="style.css">
+
+<style>
+
+.scan-container{
+max-width:900px;
+margin:auto;
+padding:80px 8%;
+text-align:center;
+}
+
+.scan-title{
+font-size:54px;
+margin-bottom:20px;
+}
+
+.scan-subtitle{
+color:#94a3b8;
+line-height:1.8;
+margin-bottom:50px;
+}
+
+.card{
+background:rgba(15,23,42,0.72);
+border:1px solid rgba(255,255,255,0.08);
+backdrop-filter:blur(14px);
+padding:45px;
+border-radius:24px;
+box-shadow:0 10px 40px rgba(0,0,0,0.35);
+}
+
+.phase-label{
+font-size:14px;
+letter-spacing:2px;
+text-transform:uppercase;
+color:#06b6d4;
+margin-bottom:20px;
+}
+
+.instruction{
+font-size:34px;
+margin:30px 0;
+line-height:1.5;
+}
+
+.word-container{
+display:flex;
+justify-content:center;
+gap:40px;
+flex-wrap:wrap;
+margin-top:40px;
+}
+
+.word-btn{
+padding:24px 34px;
+border:none;
+border-radius:18px;
+font-size:24px;
+font-weight:700;
+cursor:pointer;
+transition:0.25s;
+min-width:180px;
+}
+
+.word-btn:hover{
+transform:translateY(-5px) scale(1.03);
+}
+
+.result-card{
+display:none;
+margin-top:40px;
+background:rgba(15,23,42,0.72);
+padding:40px;
+border-radius:24px;
+border:1px solid rgba(255,255,255,0.08);
+}
+
+.result-card h2{
+font-size:40px;
+margin-bottom:20px;
+}
+
+.result-card p{
+color:#94a3b8;
+line-height:1.8;
+margin-bottom:20px;
+}
+
+.reaction-score{
+font-size:68px;
+font-weight:700;
+margin:25px 0;
+background:linear-gradient(135deg,#06b6d4,#8b5cf6);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+}
+
+.action-buttons{
+display:flex;
+justify-content:center;
+gap:20px;
+margin-top:30px;
+flex-wrap:wrap;
+}
+
+.action-buttons a{
+text-decoration:none;
+}
+
+.status{
+margin-top:25px;
+font-size:14px;
+letter-spacing:2px;
+color:#06b6d4;
+text-transform:uppercase;
+}
+
+@media(max-width:768px){
+
+.scan-title{
+font-size:40px;
+}
+
+.instruction{
+font-size:26px;
+}
+
+.word-btn{
+font-size:20px;
+min-width:140px;
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="background-glow"></div>
+
+<div class="scan-container">
+
+<h1 class="scan-title">
+⚡ Neural Reflex Calibration
+</h1>
+
+<p class="scan-subtitle">
+Analyze reaction timing, selective attention, impulse control, and adaptive cognitive switching.
+</p>
+
+<div class="card" id="scanCard">
+
+<div class="phase-label">
+Selective Attention Mapping
+</div>
+
+<div class="instruction" id="instruction">
+Press Begin Calibration
+</div>
+
+<button onclick="startCalibration()" id="startBtn">
+Begin Calibration
+</button>
+
+<div class="word-container" id="wordContainer">
+</div>
+
+<div class="status" id="statusText">
+Awaiting neural calibration...
+</div>
+
+</div>
+
+<div class="result-card" id="resultCard">
+
+<h2 id="resultTitle"></h2>
+
+<div class="reaction-score" id="reactionScore">
+0 ms
+</div>
+
+<p id="resultText"></p>
+
+<p id="insightText"></p>
+
+<div class="action-buttons">
+
+<a href="index.html#scans">
+
+<button>
+Take Another Scan
+</button>
+
+</a>
+
+<a href="index.html">
+
+<button>
+Return Home
+</button>
+
+</a>
+
+<a href="dashboard.html">
+
+<button>
+Open Dashboard
+</button>
+
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+const colors = [
+"purple",
+"blue",
+"green"
+];
+
+let currentRound = 0;
+let targetColor = "";
+let startTime = 0;
+
+let reactionTimes = [];
+
+const instruction =
+document.getElementById("instruction");
+
+const wordContainer =
+document.getElementById("wordContainer");
+
+const statusText =
+document.getElementById("statusText");
+
+function startCalibration(){
+
+document.getElementById("startBtn")
+.style.display = "none";
+
+nextRound();
+
+}
+
+function nextRound(){
+
+if(currentRound >= 3){
+
+showResults();
+
+return;
+
+}
+
+wordContainer.innerHTML = "";
+
+targetColor =
+colors[Math.floor(Math.random()*colors.length)];
+
+instruction.innerText =
+`Click the ${targetColor.toUpperCase()} word`;
+
+statusText.innerText =
+`Round ${currentRound+1} / 3`;
+
+const words = [
+"NEURAL",
+"FOCUS"
+];
+
+const randomColors = [
+colors[Math.floor(Math.random()*3)],
+colors[Math.floor(Math.random()*3)]
+];
+
+words.forEach((word,index)=>{
+
+const button =
+document.createElement("button");
+
+button.classList.add("word-btn");
+
+button.innerText = word;
+
+button.style.background =
+randomColors[index];
+
+button.style.color = "white";
+
+button.onclick = ()=>checkAnswer(
+randomColors[index]
+);
+
+wordContainer.appendChild(button);
+
+});
+
+startTime = Date.now();
+
+}
+
+function checkAnswer(selectedColor){
+
+const reactionTime =
+Date.now() - startTime;
+
+if(selectedColor === targetColor){
+
+reactionTimes.push(reactionTime);
+
+currentRound++;
+
+statusText.innerText =
+`${reactionTime} ms recorded`;
+
+setTimeout(()=>{
+nextRound();
+},900);
+
+}else{
+
+statusText.innerText =
+"Impulse mismatch detected";
+
+}
+
+}
+
+function showResults(){
+
+document.getElementById("scanCard")
+.style.display = "none";
+
+document.getElementById("resultCard")
+.style.display = "block";
+
+const average =
+Math.floor(
+reactionTimes.reduce((a,b)=>a+b,0)
+/ reactionTimes.length
+);
+
+document.getElementById("reactionScore")
+.innerText =
+average + " ms";
+
+let title = "";
+let text = "";
+let insight = "";
+
+if(average <= 500){
+
+title =
+"🏅 Elite Neural Reflexes";
+
+text =
+"Your responses indicate rapid processing speed with strong selective attention control.";
+
+insight =
+"Fast visual-motor response timing is commonly associated with efficient attentional filtering and neural responsiveness.";
+
+}
+
+else if(average <= 900){
+
+title =
+"⚡ Adaptive Cognitive Response";
+
+text =
+"Your responses suggest balanced reaction timing with moderate attentional flexibility.";
+
+insight =
+"Adaptive response timing may reflect controlled processing and stable cognitive switching behavior.";
+
+}
+
+else{
+
+title =
+"🌀 Impulse Reactive Processing";
+
+text =
+"Your responses indicate delayed processing or increased attentional interference during rapid switching tasks.";
+
+insight =
+"Reduced inhibitory filtering may increase response variability during selective attention challenges.";
+
+}
+
+document.getElementById("resultTitle")
+.innerText = title;
+
+document.getElementById("resultText")
+.innerText = text;
+
+document.getElementById("insightText")
+.innerText = insight;
+
+localStorage.setItem(
+"reactionResult",
+title
+);
+
+}
+
+</script>
+
+</body>
+</html>
